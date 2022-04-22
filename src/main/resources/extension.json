@@ -1,0 +1,5 @@
+{
+  "entrypoint": "cc.lixou.extensionname.ExtensionName",
+  "name": "ExtensionName",
+  "version": "${project.version}"
+}

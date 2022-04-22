@@ -1,0 +1,43 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.6.20'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.4.20'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+group = 'cc.lixou'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    compileOnly 'com.github.TeamSkyBeach:Stracciatella:b073cdde19'
+
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = '17'
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = '17'
+}
+
+processResources {
+    filesMatching("extension.json") {
+        expand(project.properties)
+    }
+}
+
+shadowJar {
+    archivesBaseName = project.name
+    mergeServiceFiles()
+    minimize()
+}

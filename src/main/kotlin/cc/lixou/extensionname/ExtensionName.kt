@@ -5,11 +5,11 @@ import net.minestom.server.extensions.Extension
 class ExtensionName : Extension() {
 
     override fun initialize() {
-        TODO("Not yet implemented")
+        println("[BedWars] Initialized successfully")
     }
 
     override fun terminate() {
-        TODO("Not yet implemented")
+        println("[BedWars] Terminated successfully")
     }
 
 }

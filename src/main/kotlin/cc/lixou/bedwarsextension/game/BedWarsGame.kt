@@ -11,6 +11,8 @@ class BedWarsGame : Game() {
         val MAX_PLAYERS = 8
     }
 
+    var currentState: BedWarsGameState = BedWarsGameState.WAITING
+
     override fun canJoin(players: Array<Player>): Boolean = (this.players.size + players.size) >= MAX_PLAYERS
 
     override fun onJoin(player: Player) {

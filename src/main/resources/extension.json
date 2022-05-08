@@ -1,5 +1,5 @@
 {
-  "entrypoint": "cc.lixou.extensionname.BedWarsExtension",
+  "entrypoint": "cc.lixou.bedwarsextension.BedWarsExtension",
   "name": "BedWarsExtension",
   "version": "${project.version}"
 }

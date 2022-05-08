@@ -3,6 +3,8 @@
     <option name="MAIN_CLASS_NAME" value="TestServerKt" />
     <module name="BedWarsExtension.test" />
     <shortenClasspath name="NONE" />
+    <option name="VM_PARAMETERS" value="-Dminestom.extension.indevfolder.classes=../build/classes/kotlin/main -Dminestom.extension.indevfolder.resources=../build/resources/main" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

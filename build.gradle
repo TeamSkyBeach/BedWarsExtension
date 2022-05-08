@@ -13,9 +13,9 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'com.github.TeamSkyBeach:Stracciatella:8f723d631a'
+    compileOnly 'com.github.TeamSkyBeach:Stracciatella:83704cf718'
 
-    testImplementation 'com.github.TeamSkyBeach:Stracciatella:8f723d631a'
+    testImplementation 'com.github.TeamSkyBeach:Stracciatella:83704cf718'
 
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
 }

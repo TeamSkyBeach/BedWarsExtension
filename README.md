@@ -1,4 +1,4 @@
-[license-shield]: https://img.shields.io/github/license/TeamSkyBeach/BedWarsExtension
+[license-shield]: https://img.shields.io/github/license/TeamSkyBeach/BedWarsExtension?label=licensed%20under
 [license-link]: /LICENSE
 
 # BedWars Extension

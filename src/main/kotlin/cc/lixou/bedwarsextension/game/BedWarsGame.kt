@@ -20,21 +20,25 @@ class BedWarsGame : Game() {
         val MAX_PLAYERS = 8
     }
 
+    val state = initGameState(BedWarsGameState.WAITING)
+
     init {
         instance = Manager.instance.instances.first()
+        // DEBUG
         eventNode.listenOnly<PlayerChatEvent> {
             if (message.lowercase() == "shop") {
                 player.openInventory(ShopInventory().inventory)
             }
         }
-        eventNode.listenOnly<ItemDropEvent> {
+        // ENDDEBUG
+        state.eventNode(BedWarsGameState.INGAME).listenOnly<ItemDropEvent> {
             val itemEntity = ItemEntity(itemStack)
             itemEntity.setPickupDelay(40, TimeUnit.SERVER_TICK)
             itemEntity.setInstance(instance, player.position.add(0.0, 1.5, 0.0))
             itemEntity.isGlowing = true // TODO: Glowing in team color
             itemEntity.velocity = player.position.direction().mul(6.0)
         }
-        eventNode.listenOnly<PickupItemEvent> {
+        state.eventNode(BedWarsGameState.INGAME).listenOnly<PickupItemEvent> {
             if (entity is Player) {
                 (entity as Player).inventory.addItemStack(itemStack)
             } else {

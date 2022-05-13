@@ -49,7 +49,7 @@ class BedWarsGame : Game() {
 
     var currentState: BedWarsGameState = BedWarsGameState.WAITING
 
-    override fun canJoin(newPlayers: Array<Player>): Boolean = (this.players.size + newPlayers.size) >= MAX_PLAYERS
+    override fun canJoin(newPlayers: Array<Player>): Boolean = (this.players.size + newPlayers.size) <= MAX_PLAYERS
 
     override fun onJoin(joiningPlayer: Player) {
         joiningPlayer.inventory.setItemStack(0, ItemStack.of(Material.WOODEN_SWORD))

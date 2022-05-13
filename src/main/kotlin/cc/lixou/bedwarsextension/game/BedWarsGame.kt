@@ -7,20 +7,22 @@ import net.minestom.server.entity.Player
 import net.minestom.server.event.item.ItemDropEvent
 import net.minestom.server.event.item.PickupItemEvent
 import net.minestom.server.event.player.PlayerChatEvent
-import net.minestom.server.item.ItemStack
-import net.minestom.server.item.Material
 import net.minestom.server.utils.time.TimeUnit
 import world.cepi.kstom.Manager
 import world.cepi.kstom.event.listenOnly
 
-
 class BedWarsGame : Game() {
 
-    companion object {
-        val MAX_PLAYERS = 8
-    }
-
     val state = initGameState(BedWarsGameState.WAITING)
+
+    private val TEAM_AMOUNT = 8
+    private val PLAYER_PER_TEAM = 1
+
+    val teams = mutableListOf<BedWarsTeam>().also {
+        for (i in 0..TEAM_AMOUNT) {
+            it.add(BedWarsTeam())
+        }
+    }
 
     init {
         instance = Manager.instance.instances.first()
@@ -49,14 +51,15 @@ class BedWarsGame : Game() {
 
     var currentState: BedWarsGameState = BedWarsGameState.WAITING
 
-    override fun canJoin(newPlayers: Array<Player>): Boolean = (this.players.size + newPlayers.size) <= MAX_PLAYERS
+    override fun canJoin(newPlayers: Array<Player>): Boolean =
+        (this.players.size + newPlayers.size) <= TEAM_AMOUNT * PLAYER_PER_TEAM
 
     override fun onJoin(joiningPlayer: Player) {
-        joiningPlayer.inventory.setItemStack(0, ItemStack.of(Material.WOODEN_SWORD))
+        teams.find { it.players.size < PLAYER_PER_TEAM }!!.players.add(joiningPlayer)
     }
 
     override fun onLeave(leavingPlayer: Player) {
-        leavingPlayer.sendMessage("bye bye")
+
     }
 
 }

@@ -27,7 +27,7 @@ class BedWarsGame : Game() {
         // DEBUG
         eventNode.listenOnly<PlayerChatEvent> {
             if (message.lowercase() == "shop") {
-                player.openInventory(ShopInventory().inventory)
+                player.openInventory(ShopInventory())
             }
         }
         // ENDDEBUG

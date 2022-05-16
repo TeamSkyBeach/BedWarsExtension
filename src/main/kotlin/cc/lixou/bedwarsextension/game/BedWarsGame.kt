@@ -12,6 +12,7 @@ import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import net.minestom.server.utils.time.TimeUnit
 import world.cepi.kstom.Manager
+import world.cepi.kstom.adventure.asMini
 import world.cepi.kstom.event.listenOnly
 
 
@@ -30,7 +31,7 @@ class BedWarsGame : Game() {
             if (message.lowercase() == "shop") {
                 player.openInventory(ShopInventory())
             } else if(message.lowercase() == "generator") {
-                ResourceGenerator(player.instance!!, player.position, Material.DIAMOND_BLOCK)
+                ResourceGenerator(player.instance!!, player.position, Material.DIAMOND_BLOCK, "<gradient:dark_aqua:aqua><bold>Diamond".asMini())
             }
         }
         // ENDDEBUG

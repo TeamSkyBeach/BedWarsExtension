@@ -31,7 +31,7 @@ class BedWarsGame : Game() {
             if (message.lowercase() == "shop") {
                 player.openInventory(ShopInventory())
             } else if(message.lowercase() == "generator") {
-                ResourceGenerator(player.instance!!, player.position, Material.DIAMOND_BLOCK, "<gradient:dark_aqua:aqua><bold>Diamond".asMini())
+                ResourceGenerator(player.instance!!, player.position, Material.DIAMOND_BLOCK, Material.DIAMOND, "<gradient:dark_aqua:aqua><bold>Diamond".asMini(), 5)
             }
         }
         // ENDDEBUG

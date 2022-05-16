@@ -10,13 +10,31 @@ import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import world.cepi.kstom.adventure.asMini
 import world.cepi.kstom.util.MinestomRunnable
+import java.io.Closeable
 import java.time.Duration
 import kotlin.math.sin
 
-class ResourceGenerator(instance: Instance, point: Point, block: Material) {
+class ResourceGenerator(instance: Instance, point: Point, block: Material) : Closeable {
+
+    companion object {
+        private val generators = mutableListOf<ResourceGenerator>()
+        private val runnable = object : MinestomRunnable() {
+            var yaw = 0f
+            var i = 0.0
+
+            override fun run() {
+                yaw += sin(i).toFloat() * 21f
+                i += 0.05
+
+                generators.forEach { it.entity.setView(yaw, 0f) }
+            }
+        }.also {
+            it.repeat(Duration.ofMillis(50))
+            it.schedule()
+        }
+    }
 
     private val entity = LivingEntity(EntityType.ARMOR_STAND)
-    private val runnable: MinestomRunnable
 
     init {
         entity.helmet = ItemStack.of(block)
@@ -29,20 +47,13 @@ class ResourceGenerator(instance: Instance, point: Point, block: Material) {
         meta.customName = "<gold>Next Spawn: <red><bold>13 Seconds".asMini()
         meta.isCustomNameVisible = true
 
-        runnable = object : MinestomRunnable() {
-            var yaw = 0f
-            var i = 0.0
-
-            override fun run() {
-                yaw += sin(i).toFloat() * 21f
-                i += 0.05
-
-                entity.setView(yaw, 0f)
-            }
-        }.also {
-            it.repeat(Duration.ofMillis(50))
-            it.schedule()
-        }
+        generators.add(this)
     }
+
+    override fun close() {
+        generators.remove(this)
+        entity.remove()
+    }
+
 
 }

@@ -15,6 +15,7 @@ import net.minestom.server.timer.TaskSchedule
 import world.cepi.kstom.adventure.asMini
 import world.cepi.kstom.util.MinestomRunnable
 import java.io.Closeable
+import java.time.Duration
 import kotlin.math.sin
 
 class ResourceGenerator(
@@ -92,6 +93,7 @@ class ResourceGenerator(
     private fun spawnResource() {
         nextSpawnCount = spawnDuration
         val item = ItemEntity(ItemStack.of(resource))
+        item.setPickupDelay(Duration.ZERO)
         item.setInstance(instance, spawningPos)
     }
 

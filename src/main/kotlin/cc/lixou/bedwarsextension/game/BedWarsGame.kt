@@ -1,6 +1,6 @@
 package cc.lixou.bedwarsextension.game
 
-import cc.lixou.bedwarsextension.game.generator.ResourceGenerator
+import cc.lixou.bedwarsextension.game.generator.Generators
 import cc.lixou.bedwarsextension.inventory.ShopInventory
 import cc.lixou.stracciatella.game.Game
 import net.minestom.server.entity.ItemEntity
@@ -12,7 +12,6 @@ import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import net.minestom.server.utils.time.TimeUnit
 import world.cepi.kstom.Manager
-import world.cepi.kstom.adventure.asMini
 import world.cepi.kstom.event.listenOnly
 
 
@@ -30,8 +29,8 @@ class BedWarsGame : Game() {
         eventNode.listenOnly<PlayerChatEvent> {
             if (message.lowercase() == "shop") {
                 player.openInventory(ShopInventory())
-            } else if(message.lowercase() == "generator") {
-                ResourceGenerator(player.instance!!, player.position, Material.DIAMOND_BLOCK, Material.DIAMOND, {lvl -> "<gradient:dark_aqua:aqua><bold>Diamond $lvl".asMini()}, 5)
+            } else if (message.lowercase() == "generator") {
+                Generators.DIAMOND.build(player.instance!!, player.position)
             }
         }
         // ENDDEBUG

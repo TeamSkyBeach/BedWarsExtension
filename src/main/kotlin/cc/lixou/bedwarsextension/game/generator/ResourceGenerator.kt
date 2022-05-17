@@ -22,7 +22,7 @@ class ResourceGenerator(
     point: Point,
     block: Material,
     private val resource: Material,
-    name: Component,
+    name: (level: String) -> Component,
     var spawnDuration: Int
 ) : Closeable {
 
@@ -75,7 +75,7 @@ class ResourceGenerator(
         nameLine.setInstance(instance, Vec.fromPoint(point).add(0.0, 3.5, 0.0))
         meta = nameLine.entityMeta as ArmorStandMeta
         meta.isMarker = true
-        meta.customName = name
+        meta.customName = name.invoke("I")
         meta.isCustomNameVisible = true
 
         nextSpawnLine.isInvisible = true

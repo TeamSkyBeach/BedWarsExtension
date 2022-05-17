@@ -7,43 +7,49 @@ import net.minestom.server.entity.Entity
 import net.minestom.server.entity.EntityType
 import net.minestom.server.entity.ItemEntity
 import net.minestom.server.entity.LivingEntity
-import net.minestom.server.entity.metadata.item.ItemEntityMeta
 import net.minestom.server.entity.metadata.other.ArmorStandMeta
 import net.minestom.server.instance.Instance
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
+import net.minestom.server.timer.TaskSchedule
 import world.cepi.kstom.adventure.asMini
 import world.cepi.kstom.util.MinestomRunnable
 import java.io.Closeable
-import java.time.Duration
-import kotlin.math.floor
 import kotlin.math.sin
 
-class ResourceGenerator(private val instance: Instance, point: Point, block: Material, private val resource: Material, name: Component, var spawnDuration: Int) : Closeable {
+class ResourceGenerator(
+    private val instance: Instance,
+    point: Point,
+    block: Material,
+    private val resource: Material,
+    name: Component,
+    var spawnDuration: Int
+) : Closeable {
 
     companion object {
         private val generators = mutableListOf<ResourceGenerator>()
-        private val runnable = object : MinestomRunnable() {
+        private val runnable = object : MinestomRunnable(repeat = TaskSchedule.nextTick()) {
             var yaw = 0f
-            var i = 0.0
+            var i = 0
 
             override fun run() {
-                yaw += sin(i).toFloat() * 21f
-                i += 0.05
-
-                val updateNextSpawn = floor(i * 100) / 100 % 1 == 0.0 // TODO: This doesnt count properly
+                yaw += sin(i.toDouble() / 20).toFloat() * 21f
+                i += 1
+                val updateNextSpawn = i % 20 == 0
 
                 generators.forEach {
                     it.stand.setView(yaw, 0f)
-                    if(updateNextSpawn) {
+                    if (updateNextSpawn) {
                         it.nextSpawnCount -= 1
-                        if(it.nextSpawnCount == 0) { it.spawnResource() }
-                        it.nextSpawnLine.entityMeta.customName = "<yellow>Next spawn in <red><bold>${it.nextSpawnCount} <reset><yellow>seconds".asMini()
+                        if (it.nextSpawnCount == 0) {
+                            it.spawnResource()
+                        }
+                        it.nextSpawnLine.entityMeta.customName =
+                            "<yellow>Next spawn in <red><bold>${it.nextSpawnCount} <reset><yellow>seconds".asMini()
                     }
                 }
             }
         }.also {
-            it.repeat(Duration.ofMillis(50))
             it.schedule()
         }
     }

@@ -5,13 +5,21 @@ import net.minestom.server.coordinate.Point
 import net.minestom.server.instance.Instance
 import net.minestom.server.item.Material
 
-class GeneratorFabric(
-    private val block: Material,
-    private val resource: Material,
-    private val name: (level: String) -> Component,
-    private val spawnDuration: Int
+abstract class GeneratorFabric<T : ResourceGenerator>(
+    protected val resource: Material,
+    protected val spawnDuration: Int
 ) {
+    abstract fun build(instance: Instance, point: Point): T
+}
 
-    fun build(instance: Instance, point: Point) = ResourceGenerator(instance, point, block, resource, name, spawnDuration)
+class DroppingGeneratorFabric(
+    private val block: Material,
+    resource: Material,
+    private val name: (level: String) -> Component,
+    spawnDuration: Int
+) : GeneratorFabric<DroppingResourceGenerator>(resource, spawnDuration) {
+
+    override fun build(instance: Instance, point: Point): DroppingResourceGenerator =
+        DroppingResourceGenerator(instance, point, block, resource, name, spawnDuration)
 
 }

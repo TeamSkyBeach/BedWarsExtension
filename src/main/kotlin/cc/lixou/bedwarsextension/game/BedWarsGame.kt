@@ -1,6 +1,6 @@
 package cc.lixou.bedwarsextension.game
 
-import cc.lixou.bedwarsextension.game.generator.Generators
+import cc.lixou.bedwarsextension.game.generator.fabric.Generators
 import cc.lixou.bedwarsextension.inventory.ShopInventory
 import cc.lixou.stracciatella.game.Game
 import net.minestom.server.entity.ItemEntity
@@ -30,7 +30,7 @@ class BedWarsGame : Game() {
             if (message.lowercase() == "shop") {
                 player.openInventory(ShopInventory())
             } else if (message.lowercase() == "generator") {
-                Generators.DIAMOND.build(player.instance!!, player.position)
+                Generators.BASE_FORGE.build(player.instance!!, player.position)
             }
         }
         // ENDDEBUG

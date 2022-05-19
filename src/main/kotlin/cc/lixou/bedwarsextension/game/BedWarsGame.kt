@@ -22,14 +22,14 @@ class BedWarsGame : Game() {
         val MAX_PLAYERS = 8
     }
 
-    val state = initGameState(BedWarsGameState.WAITING)
+    private var state = BedWarsGameState.WAITING
 
     init {
         instance = Manager.instance.instances.first()
         // DEBUG
         eventNode.listenOnly<PlayerChatEvent> {
             if (message.lowercase() == "play") {
-                state.state = BedWarsGameState.INGAME
+                state = BedWarsGameState.INGAME
             } else if (message.lowercase() == "shop") {
                 player.openInventory(ShopInventory())
             } else if (message.lowercase() == "generator") {
@@ -37,19 +37,29 @@ class BedWarsGame : Game() {
             }
         }
         // ENDDEBUG
-        state.eventNode(BedWarsGameState.INGAME).listenOnly<ItemDropEvent> {
-            val itemEntity = ItemEntity(itemStack)
-            itemEntity.setPickupDelay(40, TimeUnit.SERVER_TICK)
-            itemEntity.setInstance(instance, player.position.add(0.0, 1.5, 0.0))
-            itemEntity.isGlowing = true // TODO: Glowing in team color
-            itemEntity.velocity = player.position.direction().mul(6.0)
+        eventNode.listenOnly<ItemDropEvent> {
+            when(state) {
+                BedWarsGameState.INGAME -> {
+                    val itemEntity = ItemEntity(itemStack)
+                    itemEntity.setPickupDelay(40, TimeUnit.SERVER_TICK)
+                    itemEntity.setInstance(instance, player.position.add(0.0, 1.5, 0.0))
+                    itemEntity.isGlowing = true // TODO: Glowing in team color
+                    itemEntity.velocity = player.position.direction().mul(6.0)
+                }
+                else -> isCancelled = true
+            }
         }
-        state.eventNode(BedWarsGameState.INGAME).listenOnly<PickupItemEvent> {
-            if (entity is Player) {
-                ResourceGenerator.mayPickup(itemEntity)
-                (entity as Player).inventory.addItemStack(itemStack)
-            } else {
-                isCancelled = true
+        eventNode.listenOnly<PickupItemEvent> {
+            when(state) {
+                BedWarsGameState.INGAME -> {
+                    if (entity is Player) {
+                        ResourceGenerator.mayPickup(itemEntity)
+                        (entity as Player).inventory.addItemStack(itemStack)
+                    } else {
+                        isCancelled = true
+                    }
+                }
+                else -> isCancelled = true
             }
         }
     }

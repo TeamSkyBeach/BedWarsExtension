@@ -6,19 +6,23 @@ import cc.lixou.bedwarsextension.inventory.ShopInventory
 import cc.lixou.stracciatella.game.Game
 import net.minestom.server.entity.ItemEntity
 import net.minestom.server.entity.Player
+import net.minestom.server.event.entity.EntityAttackEvent
 import net.minestom.server.event.item.ItemDropEvent
 import net.minestom.server.event.item.PickupItemEvent
 import net.minestom.server.event.player.PlayerChatEvent
+import net.minestom.server.network.packet.server.play.EntityAnimationPacket
 import net.minestom.server.utils.time.TimeUnit
 import world.cepi.kstom.Manager
 import world.cepi.kstom.event.listenOnly
+import kotlin.math.cos
+import kotlin.math.sin
 
 class BedWarsGame : Game() {
 
     var currentState: BedWarsGameState = BedWarsGameState.WAITING
 
-    private val TEAM_AMOUNT = 8
-    private val PLAYER_PER_TEAM = 1
+    private val TEAM_AMOUNT = 4
+    private val PLAYER_PER_TEAM = 2
 
     val teams = mutableListOf<BedWarsTeam>().also {
         for (i in 0..TEAM_AMOUNT) {
@@ -40,7 +44,7 @@ class BedWarsGame : Game() {
         }
         // ENDDEBUG
         eventNode.listenOnly<ItemDropEvent> {
-            when(currentState) {
+            when (currentState) {
                 BedWarsGameState.INGAME -> {
                     val itemEntity = ItemEntity(itemStack)
                     itemEntity.setPickupDelay(40, TimeUnit.SERVER_TICK)
@@ -52,7 +56,7 @@ class BedWarsGame : Game() {
             }
         }
         eventNode.listenOnly<PickupItemEvent> {
-            when(currentState) {
+            when (currentState) {
                 BedWarsGameState.INGAME -> {
                     if (entity is Player) {
                         ResourceGenerator.mayPickup(itemEntity)
@@ -63,6 +67,23 @@ class BedWarsGame : Game() {
                 }
                 else -> isCancelled = true
             }
+        }
+        eventNode.listenOnly<EntityAttackEvent> {
+            if (currentState != BedWarsGameState.INGAME) return@listenOnly
+            val attacker = entity
+            if (attacker !is Player) return@listenOnly
+            if (attacker.getBedWarsTeam()!!.players.contains(target as Player)) return@listenOnly
+            target.takeKnockback(
+                0.4f,
+                sin(attacker.position.yaw * (Math.PI / 180)),
+                -cos(attacker.position.yaw * (Math.PI / 180))
+            )
+            (target as Player).sendPacketToViewersAndSelf(
+                EntityAnimationPacket(
+                    target.entityId,
+                    EntityAnimationPacket.Animation.TAKE_DAMAGE
+                )
+            )
         }
     }
 

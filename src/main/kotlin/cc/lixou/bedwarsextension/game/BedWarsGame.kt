@@ -15,7 +15,7 @@ import world.cepi.kstom.event.listenOnly
 
 class BedWarsGame : Game() {
 
-    private var state = BedWarsGameState.WAITING
+    var currentState: BedWarsGameState = BedWarsGameState.WAITING
 
     private val TEAM_AMOUNT = 8
     private val PLAYER_PER_TEAM = 1
@@ -31,7 +31,7 @@ class BedWarsGame : Game() {
         // DEBUG
         eventNode.listenOnly<PlayerChatEvent> {
             if (message.lowercase() == "play") {
-                state = BedWarsGameState.INGAME
+                currentState = BedWarsGameState.INGAME
             } else if (message.lowercase() == "shop") {
                 player.openInventory(ShopInventory())
             } else if (message.lowercase() == "generator") {
@@ -40,7 +40,7 @@ class BedWarsGame : Game() {
         }
         // ENDDEBUG
         eventNode.listenOnly<ItemDropEvent> {
-            when(state) {
+            when(currentState) {
                 BedWarsGameState.INGAME -> {
                     val itemEntity = ItemEntity(itemStack)
                     itemEntity.setPickupDelay(40, TimeUnit.SERVER_TICK)
@@ -52,7 +52,7 @@ class BedWarsGame : Game() {
             }
         }
         eventNode.listenOnly<PickupItemEvent> {
-            when(state) {
+            when(currentState) {
                 BedWarsGameState.INGAME -> {
                     if (entity is Player) {
                         ResourceGenerator.mayPickup(itemEntity)
@@ -65,8 +65,6 @@ class BedWarsGame : Game() {
             }
         }
     }
-
-    var currentState: BedWarsGameState = BedWarsGameState.WAITING
 
     override fun canJoin(newPlayers: Array<Player>): Boolean =
         (this.players.size + newPlayers.size) <= TEAM_AMOUNT * PLAYER_PER_TEAM

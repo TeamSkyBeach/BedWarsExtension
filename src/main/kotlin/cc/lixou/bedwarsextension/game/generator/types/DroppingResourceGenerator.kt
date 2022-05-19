@@ -21,8 +21,13 @@ class DroppingResourceGenerator(
     block: Material,
     private val resource: Material,
     name: (level: String) -> Component,
-    private val spawnDuration: Int
+    private val spawnDuration: Int,
+    private val maxItems: Int
 ) : ResourceGenerator(instance, point) {
+
+    private var currentItems = 0
+
+    fun canSpawn(): Boolean = currentItems < maxItems
 
     val stand = LivingEntity(EntityType.ARMOR_STAND)
     private val nameLine = Entity(EntityType.ARMOR_STAND)
@@ -58,10 +63,15 @@ class DroppingResourceGenerator(
         meta.isCustomNameVisible = true
     }
 
-    fun spawnResource() {
+    fun resetCountdown() {
         nextSpawnCount = spawnDuration
+    }
+
+    fun spawnResource() {
         val item = ItemEntity(ItemStack.of(resource))
+        item.setTag(uuidTag, uuid)
         item.setPickupDelay(Duration.ZERO)
+        currentItems++
         item.isMergeable = false
         item.setInstance(instance, spawningPos)
     }
@@ -69,6 +79,11 @@ class DroppingResourceGenerator(
     override fun close() {
         stand.remove()
         nameLine.remove()
+    }
+
+    override fun mayPickup(item: ItemEntity) {
+        if (resource != item.itemStack.material()) return
+        currentItems -= 1
     }
 
 

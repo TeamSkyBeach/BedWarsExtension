@@ -3,7 +3,9 @@ package cc.lixou.bedwarsextension.game.generator
 import cc.lixou.bedwarsextension.game.generator.types.DroppingResourceGenerator
 import cc.lixou.bedwarsextension.game.generator.types.ForgeResourceGenerator
 import net.minestom.server.coordinate.Point
+import net.minestom.server.entity.ItemEntity
 import net.minestom.server.instance.Instance
+import net.minestom.server.tag.Tag
 import net.minestom.server.timer.TaskSchedule
 import world.cepi.kstom.adventure.asMini
 import world.cepi.kstom.util.MinestomRunnable
@@ -17,6 +19,8 @@ abstract class ResourceGenerator(
 ) : Closeable {
 
     companion object {
+        val uuidTag = Tag.UUID("genID")
+
         private val generators = mutableMapOf<UUID, ResourceGenerator>()
         private val runnable = object : MinestomRunnable(repeat = TaskSchedule.nextTick()) {
             var yaw = 0f
@@ -33,7 +37,8 @@ abstract class ResourceGenerator(
                         if (updateNextSpawn) {
                             it.nextSpawnCount -= 1
                             if (it.nextSpawnCount == 0) {
-                                it.spawnResource()
+                                it.resetCountdown()
+                                if(it.canSpawn()) it.spawnResource()
                             }
                             it.nextSpawnLine.entityMeta.customName =
                                 "<yellow>Next spawn in <red><bold>${it.nextSpawnCount} <reset><yellow>seconds".asMini()
@@ -42,7 +47,8 @@ abstract class ResourceGenerator(
                         it.entries.forEach { entry ->
                             entry.nextSpawn -= 1
                             if(entry.nextSpawn == 0) {
-                                it.spawnResource(entry)
+                                it.resetCountdown(entry)
+                                if(it.canSpawn()) it.spawnResource(entry)
                             }
                         }
                     }
@@ -50,6 +56,12 @@ abstract class ResourceGenerator(
             }
         }.also {
             it.schedule()
+        }
+
+        fun mayPickup(item: ItemEntity) {
+            val tag = item.getTag(uuidTag)
+            val generator = generators[tag] ?: return
+            generator.mayPickup(item)
         }
     }
 
@@ -63,5 +75,7 @@ abstract class ResourceGenerator(
         println("faw")
         generators.keys.forEach { id -> if(id == uuid) generators.remove(id) }
     }
+
+    abstract fun mayPickup(item: ItemEntity)
 
 }

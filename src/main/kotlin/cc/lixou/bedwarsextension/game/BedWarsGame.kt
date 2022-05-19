@@ -1,5 +1,6 @@
 package cc.lixou.bedwarsextension.game
 
+import cc.lixou.bedwarsextension.game.generator.ResourceGenerator
 import cc.lixou.bedwarsextension.game.generator.fabric.Generators
 import cc.lixou.bedwarsextension.inventory.ShopInventory
 import cc.lixou.stracciatella.game.Game
@@ -27,10 +28,12 @@ class BedWarsGame : Game() {
         instance = Manager.instance.instances.first()
         // DEBUG
         eventNode.listenOnly<PlayerChatEvent> {
-            if (message.lowercase() == "shop") {
+            if (message.lowercase() == "play") {
+                state.state = BedWarsGameState.INGAME
+            } else if (message.lowercase() == "shop") {
                 player.openInventory(ShopInventory())
             } else if (message.lowercase() == "generator") {
-                Generators.BASE_FORGE.build(player.instance!!, player.position)
+                Generators.DIAMOND.build(player.instance!!, player.position, 1)
             }
         }
         // ENDDEBUG
@@ -43,6 +46,7 @@ class BedWarsGame : Game() {
         }
         state.eventNode(BedWarsGameState.INGAME).listenOnly<PickupItemEvent> {
             if (entity is Player) {
+                ResourceGenerator.mayPickup(itemEntity)
                 (entity as Player).inventory.addItemStack(itemStack)
             } else {
                 isCancelled = true

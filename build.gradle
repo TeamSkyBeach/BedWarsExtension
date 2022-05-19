@@ -1,6 +1,6 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.6.20'
-    id 'org.jetbrains.kotlin.plugin.serialization' version '1.4.20'
+    id 'org.jetbrains.kotlin.jvm' version '1.6.21'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.6.21'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
@@ -13,9 +13,9 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'com.github.TeamSkyBeach:Stracciatella:430dbb5de7'
+    compileOnly 'com.github.TeamSkyBeach:Stracciatella:1dc817bd85'
 
-    testImplementation 'com.github.TeamSkyBeach:Stracciatella:430dbb5de7'
+    testImplementation 'com.github.TeamSkyBeach:Stracciatella:1dc817bd85'
 
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
 }

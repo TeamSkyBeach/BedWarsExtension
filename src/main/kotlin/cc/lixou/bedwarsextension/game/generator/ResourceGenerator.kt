@@ -8,6 +8,7 @@ import net.minestom.server.timer.TaskSchedule
 import world.cepi.kstom.adventure.asMini
 import world.cepi.kstom.util.MinestomRunnable
 import java.io.Closeable
+import java.util.UUID
 import kotlin.math.sin
 
 abstract class ResourceGenerator(
@@ -16,7 +17,7 @@ abstract class ResourceGenerator(
 ) : Closeable {
 
     companion object {
-        private val generators = mutableListOf<ResourceGenerator>()
+        private val generators = mutableMapOf<UUID, ResourceGenerator>()
         private val runnable = object : MinestomRunnable(repeat = TaskSchedule.nextTick()) {
             var yaw = 0f
             var i = 0
@@ -26,7 +27,7 @@ abstract class ResourceGenerator(
                 i += 1
                 val updateNextSpawn = i % 20 == 0
 
-                generators.forEach {
+                generators.values.forEach {
                     if (it is DroppingResourceGenerator) {
                         it.stand.setView(yaw, 0f)
                         if (updateNextSpawn) {
@@ -52,13 +53,15 @@ abstract class ResourceGenerator(
         }
     }
 
+    val uuid = UUID.randomUUID()
+
     init {
-        generators.add(this)
+        generators[uuid] = this
     }
 
     override fun close() {
         println("faw")
-        generators.remove(this)
+        generators.keys.forEach { id -> if(id == uuid) generators.remove(id) }
     }
 
 }

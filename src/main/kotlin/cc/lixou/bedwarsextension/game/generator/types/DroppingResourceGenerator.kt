@@ -62,6 +62,7 @@ class DroppingResourceGenerator(
         nextSpawnCount = spawnDuration
         val item = ItemEntity(ItemStack.of(resource))
         item.setPickupDelay(Duration.ZERO)
+        item.isMergeable = false
         item.setInstance(instance, spawningPos)
     }
 

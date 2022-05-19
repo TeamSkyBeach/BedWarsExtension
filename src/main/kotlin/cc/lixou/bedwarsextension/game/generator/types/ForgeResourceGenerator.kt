@@ -11,12 +11,14 @@ import java.time.Duration
 class ForgeResourceGenerator(
     instance: Instance,
     point: Point,
-    vararg val entries: ForgeEntry
+    vararg val entries: ForgeEntry,
+    private val maxItems: Int
 ) : ResourceGenerator(instance, point) {
 
     fun spawnResource(entry: ForgeEntry) {
         entry.nextSpawn = entry.spawnDuration
         val item = ItemEntity(ItemStack.of(entry.resource))
+        item.isMergeable = false
         item.setPickupDelay(Duration.ZERO)
         item.setInstance(instance, point)
     }

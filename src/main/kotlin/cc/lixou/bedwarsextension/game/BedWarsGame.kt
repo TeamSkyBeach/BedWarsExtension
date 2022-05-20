@@ -13,6 +13,7 @@ import net.minestom.server.event.player.PlayerChatEvent
 import net.minestom.server.network.packet.server.play.EntityAnimationPacket
 import net.minestom.server.utils.time.TimeUnit
 import world.cepi.kstom.Manager
+import world.cepi.kstom.adventure.asMini
 import world.cepi.kstom.event.listenOnly
 import kotlin.math.cos
 import kotlin.math.sin
@@ -26,7 +27,7 @@ class BedWarsGame : Game() {
 
     val teams = mutableListOf<BedWarsTeam>().also {
         for (i in 0..TEAM_AMOUNT) {
-            it.add(BedWarsTeam())
+            it.add(BedWarsTeam("siu", "<red><bold>R <reset>".asMini()))
         }
     }
 
@@ -91,7 +92,7 @@ class BedWarsGame : Game() {
         (this.players.size + newPlayers.size) <= TEAM_AMOUNT * PLAYER_PER_TEAM
 
     override fun onJoin(joiningPlayer: Player) {
-        teams.find { it.players.size < PLAYER_PER_TEAM }!!.players.add(joiningPlayer)
+        teams.find { it.players.size < PLAYER_PER_TEAM }!!.addPlayer(joiningPlayer)
     }
 
     override fun onLeave(leavingPlayer: Player) {

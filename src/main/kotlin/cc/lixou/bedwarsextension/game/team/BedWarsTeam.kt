@@ -18,6 +18,11 @@ class BedWarsTeam(name: String, prefix: Component, color: NamedTextColor, privat
         player.team = team
     }
 
+    fun removePlayer(player: Player) {
+        players.remove(player)
+        player.team = null
+    }
+
 }
 
 /* Extensions */

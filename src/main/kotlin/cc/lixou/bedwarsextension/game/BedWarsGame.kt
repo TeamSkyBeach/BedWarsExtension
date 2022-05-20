@@ -95,7 +95,7 @@ class BedWarsGame : Game() {
     }
 
     override fun onLeave(leavingPlayer: Player) {
-
+        leavingPlayer.getBedWarsTeam()?.removePlayer(leavingPlayer)
     }
 
 }

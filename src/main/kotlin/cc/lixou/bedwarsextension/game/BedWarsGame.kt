@@ -3,6 +3,7 @@ package cc.lixou.bedwarsextension.game
 import cc.lixou.bedwarsextension.game.generator.ResourceGenerator
 import cc.lixou.bedwarsextension.game.generator.fabric.Generators
 import cc.lixou.bedwarsextension.game.team.BedWarsTeam
+import cc.lixou.bedwarsextension.game.team.TeamTypes
 import cc.lixou.bedwarsextension.game.team.getBedWarsTeam
 import cc.lixou.bedwarsextension.inventory.ShopInventory
 import cc.lixou.stracciatella.game.Game
@@ -15,7 +16,6 @@ import net.minestom.server.event.player.PlayerChatEvent
 import net.minestom.server.network.packet.server.play.EntityAnimationPacket
 import net.minestom.server.utils.time.TimeUnit
 import world.cepi.kstom.Manager
-import world.cepi.kstom.adventure.asMini
 import world.cepi.kstom.event.listenOnly
 import kotlin.math.cos
 import kotlin.math.sin
@@ -24,14 +24,10 @@ class BedWarsGame : Game() {
 
     var currentState: BedWarsGameState = BedWarsGameState.WAITING
 
-    private val TEAM_AMOUNT = 4
+    private val TEAM_AMOUNT = 8
     private val PLAYER_PER_TEAM = 2
 
-    val teams = mutableListOf<BedWarsTeam>().also {
-        for (i in 0..TEAM_AMOUNT) {
-            it.add(BedWarsTeam("siu", "<red><bold>R <reset>".asMini()))
-        }
-    }
+    val teams = mutableListOf<BedWarsTeam>()
 
     init {
         instance = Manager.instance.instances.first()
@@ -94,7 +90,8 @@ class BedWarsGame : Game() {
         (this.players.size + newPlayers.size) <= TEAM_AMOUNT * PLAYER_PER_TEAM
 
     override fun onJoin(joiningPlayer: Player) {
-        teams.find { it.players.size < PLAYER_PER_TEAM }!!.addPlayer(joiningPlayer)
+        teams.find { it.players.size < PLAYER_PER_TEAM }?.addPlayer(joiningPlayer)
+            ?: teams.add(TeamTypes.createTeam(teams.size, uuid).also { it.addPlayer(joiningPlayer) })
     }
 
     override fun onLeave(leavingPlayer: Player) {

@@ -1,5 +1,6 @@
-package cc.lixou.bedwarsextension.game
+package cc.lixou.bedwarsextension.game.team
 
+import cc.lixou.bedwarsextension.game.BedWarsGame
 import cc.lixou.stracciatella.game.GameManager.playingGame
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor

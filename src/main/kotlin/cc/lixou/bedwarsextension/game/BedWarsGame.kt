@@ -2,6 +2,8 @@ package cc.lixou.bedwarsextension.game
 
 import cc.lixou.bedwarsextension.game.generator.ResourceGenerator
 import cc.lixou.bedwarsextension.game.generator.fabric.Generators
+import cc.lixou.bedwarsextension.game.team.BedWarsTeam
+import cc.lixou.bedwarsextension.game.team.getBedWarsTeam
 import cc.lixou.bedwarsextension.inventory.ShopInventory
 import cc.lixou.stracciatella.game.Game
 import net.minestom.server.entity.ItemEntity

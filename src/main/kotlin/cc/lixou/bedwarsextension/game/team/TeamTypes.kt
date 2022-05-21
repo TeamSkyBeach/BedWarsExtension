@@ -27,7 +27,7 @@ object TeamTypes {
 
     fun createTeam(nextFree: Int, uuid: UUID): BedWarsTeam {
         val next: TeamType = entries[nextFree]
-        return BedWarsTeam(next.baseName + uuid, next.prefix, next.color, next.bedColor)
+        return BedWarsTeam(nextFree.toString() + next.baseName + uuid, next.prefix, next.color, next.bedColor)
     }
 
 }

@@ -15,7 +15,6 @@ import net.minestom.server.utils.time.TimeUnit
 import world.cepi.kstom.Manager
 import world.cepi.kstom.event.listenOnly
 
-
 class BedWarsGame : Game() {
 
     companion object {
@@ -66,7 +65,7 @@ class BedWarsGame : Game() {
 
     var currentState: BedWarsGameState = BedWarsGameState.WAITING
 
-    override fun canJoin(newPlayers: Array<Player>): Boolean = (this.players.size + newPlayers.size) >= MAX_PLAYERS
+    override fun canJoin(newPlayers: Array<Player>): Boolean = (this.players.size + newPlayers.size) >= MAX_PLAYERS && currentState == BedWarsGameState.WAITING
 
     override fun onJoin(joiningPlayer: Player) {
         joiningPlayer.inventory.setItemStack(0, ItemStack.of(Material.WOODEN_SWORD))
@@ -74,6 +73,12 @@ class BedWarsGame : Game() {
 
     override fun onLeave(leavingPlayer: Player) {
         leavingPlayer.sendMessage("bye bye")
+    }
+
+    override fun shouldClose(): Boolean = this.players.size == 0
+
+    override fun onClose() {
+
     }
 
 }
